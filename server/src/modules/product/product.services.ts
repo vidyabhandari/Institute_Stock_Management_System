@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose, { Types } from 'mongoose';
+import CustomError from '../../errors/customError';
 import sortAndPaginatePipeline from '../../lib/sortAndPaginate.pipeline';
 import BaseServices from '../baseServices';
-import Product from './product.model';
-import matchStagePipeline from './product.aggregation.pipeline';
-import CustomError from '../../errors/customError';
 import Purchase from '../purchase/purchase.model';
 import Seller from '../seller/seller.model';
+import matchStagePipeline from './product.aggregation.pipeline';
 import { IProduct } from './product.interface';
+import Product from './product.model';
 
 class ProductServices extends BaseServices<any> {
   constructor(model: any, modelName: string) {
@@ -20,7 +20,7 @@ class ProductServices extends BaseServices<any> {
   async create(payload: IProduct, userId: string) {
     type str = keyof IProduct;
     (Object.keys(payload) as str[]).forEach((key: str) => {
-      if (payload[key] === '') {
+      if (payload[key] == null || payload[key] === '') {
         delete payload[key];
       }
     });
@@ -32,6 +32,9 @@ class ProductServices extends BaseServices<any> {
       session.startTransaction();
 
       const seller = await Seller.findById(payload.seller);
+      if (!seller) {
+        throw new CustomError(400, 'Invalid seller ID');
+      }
       const product: any = await this.model.create([payload], { session });
 
       await Purchase.create(
