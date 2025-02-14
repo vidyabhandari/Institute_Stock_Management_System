@@ -18,6 +18,12 @@ class ProductServices extends BaseServices<any> {
    * Create new product
    */
   async create(payload: IProduct, userId: string) {
+    // Step 1: Validate payload data
+    if (!payload.seller || !payload.name || !payload.stock || !payload.price) {
+      throw new CustomError(400, 'Missing required fields: seller, name, stock, price');
+    }
+
+    // Clean up payload by removing null or empty fields
     type str = keyof IProduct;
     (Object.keys(payload) as str[]).forEach((key: str) => {
       if (payload[key] == null || payload[key] === '') {
@@ -31,12 +37,16 @@ class ProductServices extends BaseServices<any> {
     try {
       session.startTransaction();
 
+      // Step 2: Check if seller exists
       const seller = await Seller.findById(payload.seller);
       if (!seller) {
         throw new CustomError(400, 'Invalid seller ID');
       }
+
+      // Step 3: Create product
       const product: any = await this.model.create([payload], { session });
 
+      // Step 4: Add to Purchase collection
       await Purchase.create(
         [
           {
@@ -47,18 +57,23 @@ class ProductServices extends BaseServices<any> {
             productName: product[0]?.name,
             quantity: Number(product[0]?.stock),
             unitPrice: Number(product[0]?.price),
-            totalPrice: Number(product[0]?.stock) * Number(product[0]?.price)
+            totalPrice: Number(product[0]?.stock) * Number(product[0]?.price),
           }
         ],
         { session }
       );
 
+      // Step 5: Commit the transaction
       await session.commitTransaction();
 
+      console.log('Created product:', product);  // Log created product for debugging
+
       return product;
-    } catch (error) {
+    } 
+    catch (error) {
+      console.error('Error during product creation:', error);  // Log error for debugging
       await session.abortTransaction();
-      throw new CustomError(400, 'Product create failed');
+      throw new CustomError(400, 'Product creation failed');
     } finally {
       await session.endSession();
     }
@@ -69,23 +84,9 @@ class ProductServices extends BaseServices<any> {
    */
   async countTotalProduct(userId: string) {
     return this.model.aggregate([
-      {
-        $match: {
-          user: new Types.ObjectId(userId)
-        }
-      },
-      {
-        $group: {
-          _id: null,
-          totalQuantity: { $sum: '$stock' }
-        }
-      },
-      {
-        $project: {
-          totalQuantity: 1,
-          _id: 0
-        }
-      }
+      { $match: { user: new Types.ObjectId(userId) } },
+      { $group: { _id: null, totalQuantity: { $sum: '$stock' } } },
+      { $project: { totalQuantity: 1, _id: 0 } }
     ]);
   }
 
@@ -93,21 +94,15 @@ class ProductServices extends BaseServices<any> {
    * Get All product of user
    */
   async readAll(query: Record<string, unknown> = {}, userId: string) {
-    let data = await this.model.aggregate([...matchStagePipeline(query, userId), ...sortAndPaginatePipeline(query)]);
+    let data = await this.model.aggregate([
+      ...matchStagePipeline(query, userId),
+      ...sortAndPaginatePipeline(query)
+    ]);
 
     const totalCount = await this.model.aggregate([
       ...matchStagePipeline(query, userId),
-      {
-        $group: {
-          _id: null,
-          total: { $sum: 1 }
-        }
-      },
-      {
-        $project: {
-          _id: 0
-        }
-      }
+      { $group: { _id: null, total: { $sum: 1 } } },
+      { $project: { _id: 0 } }
     ]);
 
     data = await this.model.populate(data, { path: 'category', select: '-__v -user' });
@@ -130,12 +125,11 @@ class ProductServices extends BaseServices<any> {
    */
   async bulkDelete(payload: string[]) {
     const data = payload.map((item) => new Types.ObjectId(item));
-
     return this.model.deleteMany({ _id: { $in: data } });
   }
 
   /**
-   * Create new product
+   * Add product to stock
    */
   async addToStock(id: string, payload: Pick<IProduct, 'seller' | 'stock'>, userId: string) {
     const session = await mongoose.startSession();
@@ -144,7 +138,15 @@ class ProductServices extends BaseServices<any> {
       session.startTransaction();
 
       const seller = await Seller.findById(payload.seller);
-      const product: any = await this.model.findByIdAndUpdate(id, { $inc: { stock: payload.stock } }, { session });
+      if (!seller) {
+        throw new CustomError(400, 'Invalid seller ID');
+      }
+
+      const product: any = await this.model.findByIdAndUpdate(
+        id,
+        { $inc: { stock: payload.stock } },
+        { session, new: true }
+      );
 
       await Purchase.create(
         [
@@ -156,7 +158,7 @@ class ProductServices extends BaseServices<any> {
             productName: product.name,
             quantity: Number(product.stock),
             unitPrice: Number(product.price),
-            totalPrice: Number(product.stock) * Number(product.price)
+            totalPrice: Number(product.stock) * Number(product.price),
           }
         ],
         { session }
@@ -164,11 +166,13 @@ class ProductServices extends BaseServices<any> {
 
       await session.commitTransaction();
 
+      console.log('Updated product:', product);  // Log updated product for debugging
+
       return product;
     } catch (error) {
-      console.log(error);
+      console.error('Error during adding to stock:', error);  // Log error for debugging
       await session.abortTransaction();
-      throw new CustomError(400, 'Product create failed');
+      throw new CustomError(400, 'Product update failed');
     } finally {
       await session.endSession();
     }

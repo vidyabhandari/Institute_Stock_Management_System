@@ -1,10 +1,10 @@
-import {useState} from 'react';
-import {Outlet, useNavigate} from 'react-router-dom';
-import {Button, Layout, Menu} from 'antd';
-import {LogoutOutlined} from '@ant-design/icons';
-import {sidebarItems} from '../../constant/sidebarItems';
-import {useAppDispatch} from '../../redux/hooks';
-import {logoutUser} from '../../redux/services/authSlice';
+import { LogoutOutlined } from '@ant-design/icons';
+import { Button, Layout, Menu } from 'antd';
+import { useState } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
+import { sidebarItems } from '../../constant/sidebarItems';
+import { useAppDispatch } from '../../redux/hooks';
+import { logoutUser } from '../../redux/services/authSlice';
 
 const {Content, Sider} = Layout;
 
