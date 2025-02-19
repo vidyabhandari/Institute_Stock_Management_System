@@ -3,13 +3,13 @@ import type { PaginationProps, TableColumnsType } from 'antd';
 import { Button, Flex, Modal, Pagination, Table } from 'antd';
 import { useState } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
+import SearchInput from '../../components/SearchInput';
+import toastMessage from '../../lib/toastMessage';
 import {
   useDeleteSellerMutation,
   useGetAllSellerQuery,
 } from '../../redux/features/management/sellerApi';
 import { IProduct, ISeller } from '../../types/product.types';
-import toastMessage from '../../lib/toastMessage';
-import SearchInput from '../../components/SearchInput';
 
 const SellerManagementPage = () => {
   const [query, setQuery] = useState({

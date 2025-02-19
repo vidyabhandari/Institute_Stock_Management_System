@@ -182,9 +182,9 @@ const CreateProduct = () => {
               <Col xs={{ span: 23 }} lg={{ span: 18 }}>
                 <select className='input-field' {...register('size')}>
                   <option value=''>Select Product Size</option>
-                  <option value='SMALL'>Small</option>
-                  <option value='MEDIUM'>Medium</option>
-                  <option value='LARGE'>Large</option>
+                  <option value='SMALL'>Pieces</option>
+                <option value='MEDIUM'>Boxes</option>
+                <option value='LARGE'>Kilograms</option>
                 </select>
               </Col>
             </Row>

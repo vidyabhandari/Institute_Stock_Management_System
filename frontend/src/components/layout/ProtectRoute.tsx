@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
+import { Navigate } from 'react-router-dom';
 import { useAppSelector } from '../../redux/hooks';
 import { getCurrentUser } from '../../redux/services/authSlice';
-import { Navigate } from 'react-router-dom';
 
 const ProtectRoute = ({ children }: { children: ReactNode }) => {
   const user = useAppSelector(getCurrentUser);

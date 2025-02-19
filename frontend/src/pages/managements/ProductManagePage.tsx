@@ -3,20 +3,20 @@ import type { PaginationProps, TableColumnsType } from 'antd';
 import { Button, Col, Flex, Modal, Pagination, Row, Table, Tag } from 'antd';
 import { useState } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
+import CustomInput from '../../components/CustomInput';
+import ProductManagementFilter from '../../components/query-filters/ProductManagementFilter';
+import toastMessage from '../../lib/toastMessage';
+import { useGetAllBrandsQuery } from '../../redux/features/management/brandApi';
+import { useGetAllCategoriesQuery } from '../../redux/features/management/categoryApi';
 import {
   useAddStockMutation,
   useDeleteProductMutation,
   useGetAllProductsQuery,
   useUpdateProductMutation,
 } from '../../redux/features/management/productApi';
-import { ICategory, IProduct } from '../../types/product.types';
-import ProductManagementFilter from '../../components/query-filters/ProductManagementFilter';
-import CustomInput from '../../components/CustomInput';
-import toastMessage from '../../lib/toastMessage';
-import { useGetAllCategoriesQuery } from '../../redux/features/management/categoryApi';
-import { useGetAllSellerQuery } from '../../redux/features/management/sellerApi';
-import { useGetAllBrandsQuery } from '../../redux/features/management/brandApi';
 import { useCreateSaleMutation } from '../../redux/features/management/saleApi';
+import { useGetAllSellerQuery } from '../../redux/features/management/sellerApi';
+import { ICategory, IProduct } from '../../types/product.types';
 
 const ProductManagePage = () => {
   const [current, setCurrent] = useState(1);
