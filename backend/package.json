@@ -39,12 +39,15 @@
     "eslint-config-prettier": "^9.0.0",
     "prettier": "^3.1.0",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.2.2"
+    "typescript": "^5.8.2"
   },
   "homepage": "https://github.com/mhShohan/inventory-management-system",
   "repository": {
     "type": "git",
     "url": "https://github.com/mhShohan/inventory-management-system.git"
+  },
+  "engines": {
+    "node": "20"
   },
   "author": "mhShohan",
   "license": "MIT",
