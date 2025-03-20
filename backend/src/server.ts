@@ -3,10 +3,9 @@ import { Server } from 'http';
 import mongoose from 'mongoose';
 import app from './app';
 import config from './config';
-
 // Load environment variables from .env file
 dotenv.config();
-
+// console.log("MONGO_URI:", process.env.MONGO_URI);
 let server: Server;
 
 async function main() {
