@@ -1,42 +1,42 @@
 export interface IUser {
   name: string;
   email: string;
-  title?: string;
-  description?: string;
+  // title?: string;
+  // description?: string;
   role: string;
-  avatar?: string;
-  password: string;
+  // avatar?: string;
+  // password: string;
   status: string;
-  address?: string;
-  phone?: string
-  city?: string;
-  country?: string;
-  facebook?: string;
-  twitter?: string;
-  linkedin?: string;
-  instagram?: string;
+  // address?: string;
+  // phone?: string
+  // city?: string;
+  // country?: string;
+  // facebook?: string;
+  // twitter?: string;
+  // linkedin?: string;
+  // instagram?: string;
 }
 
 export const profileKeys = [
   { keyName: 'name' },
   { keyName: 'email' },
-  { keyName: 'title' },
-  { keyName: 'description' },
+  // { keyName: 'title' },
+  // { keyName: 'description' },
   { keyName: 'status' },
-  { keyName: 'address' },
-  { keyName: 'phone' },
-  { keyName: 'city' },
-  { keyName: 'country' },
-  { keyName: 'facebook' },
-  { keyName: 'twitter' },
-  { keyName: 'linkedin' },
-  { keyName: 'instagram' },
+  // { keyName: 'address' },
+  // { keyName: 'phone' },
+  // { keyName: 'city' },
+  // { keyName: 'country' },/
+  // { keyName: 'facebook' },
+  // { keyName: 'twitter' },
+  // { keyName: 'linkedin' },
+  // { keyName: 'instagram' },
 ]
 
 export const profileInputFields = [
   { id: 1, name: 'name', label: 'Name' },
   { id: 2, name: 'email', label: 'Email' },
-  { id: 3, name: 'title', label: 'Title' },
+  // { id: 3, name: 'title', label: 'Title' },
   { id: 4, name: 'description', label: 'Description' },
   { id: 7, name: 'address', label: 'Address' },
   { id: 8, name: 'phone', label: 'Phone' },
